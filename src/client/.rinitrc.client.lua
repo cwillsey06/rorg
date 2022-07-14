@@ -1,21 +1,25 @@
--- .rinitrc.client.lua
+-- RorgRuntime.client.lua
 -- Coltrane Willsey
--- 2022-07-08 [09:31]
+-- 2022-07-13 [22:13]
 
-local common = game:GetService("ReplicatedStorage").common
-local Modules = common.Modules
+local common = game:GetService("ReplicatedStorage"):WaitForChild("common")
+local Modules = common:WaitForChild("Modules")
 local ldbin = require(Modules.ldbin)
 local new = require(Modules.new)
 
-local R = ldbin('r', true)
+local R = ldbin('r')
 
--- Start R
-R.startR {}
-
--- Create display
-local display = new("ScreenGui", game.Players.LocalPlayer.PlayerGui, {
+local PrimayDisplay = new("ScreenGui", game.Players.LocalPlayer.PlayerGui, {
     Name = "Display";
-    IgnoreGuiInset = true;
     ResetOnSpawn = false;
+    IgnoreGuiInset = true;
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 })
-R.rrandr { display=display; primary=true; rotate=0; }
+
+R.AddDisplay(PrimayDisplay, true)
+R.StartR()
+:andThen(function()
+    -- run stuff
+    print("R Successfully initialized")
+end)
+:catch(warn)
